@@ -50,7 +50,8 @@ namespace STGramApi
             }
         }
 
-        public static async Task<Message> SendDocumentAsync(this STGram api, long chat_id, string document, int reply_to_message_id = 0, string caption = "", string parse_mode = "",
+        public static async Task<Message> SendDocumentAsync(this STGram api, long chat_id, string document, int reply_to_message_id = 0, string caption = "",
+                                                            string parse_mode = "",
                                                             InlineKeyboardMarkup reply_markup = null)
         {
             //Проверка наличия кнопок клавиатуры reply_markup
