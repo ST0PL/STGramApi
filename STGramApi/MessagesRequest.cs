@@ -72,7 +72,7 @@ namespace STGramApi
                         //Упаковка потока файла в streamcontent
                         StreamContent streamContent = new StreamContent(fs);
                         //Добавление в запрос заголовка, содаржащего название файлы, дату, и путь
-                        streamContent.Headers.Add("Content-Disposition", new string(Encoding.UTF8.GetBytes($"form-data; name=\"document\"; filename=\"{Path.GetFileName(document)}\"").Select(b => (char)b).ToArray()));
+                        streamContent.Headers.Add("Content-Disposition", new string(Encoding.UTF8.GetBytes($"form-data; name=\"document\"; filename=\"{Path.GetFileName(document)}\"")));
                         //Добавление streamcontent в качестве контента запроса
                         content.Add(streamContent);
                         //Выполение POST запроса
