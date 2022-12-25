@@ -139,8 +139,8 @@ namespace STGramApi
         {
             reply_markup = reply_markup == null ? new InlineKeyboardMarkup() : reply_markup;
             string Method = MethodBase.GetCurrentMethod().Name;
-            Request = WebRequest.Create($"{STGram.API}{api.Token}/{Method}?chat_id={chat_id}&message_id={message_id}&text={UrlEncode(message_text)}&parse_mode={parse_mode}" +
-                                        "&reply_markup={UrlEncode(JsonConvert.SerializeObject(reply_markup, JSS))}");
+            Request = WebRequest.Create($"{STGram.API}{api.Token}/{Method}?chat_id={chat_id}&message_id={message_id}&text={UrlEncode(message_text)}" +
+                                        "&parse_mode={parse_mode}&reply_markup={UrlEncode(JsonConvert.SerializeObject(reply_markup, JSS))}");
             using (Stream stream = Request.GetResponse().GetResponseStream())
             {
                 using (StreamReader sr = new StreamReader(stream))
@@ -167,7 +167,8 @@ namespace STGramApi
         public static void AnswerCallbackQuery(this STGram api, string CallbackQueryId, string text="", bool show_alert=false, string url="", int cache_time=0)
         {
             string Method = MethodBase.GetCurrentMethod().Name;
-            Request = WebRequest.Create($"{STGram.API}{api.Token}/{Method}?callback_query_id={CallbackQueryId}&text={text}&show_alert={show_alert}&url={url}&cache_time={cache_time}");
+            Request = WebRequest.Create($"{STGram.API}{api.Token}/{Method}?callback_query_id={CallbackQueryId}" +
+                                        "&text={text}&show_alert={show_alert}&url={url}&cache_time={cache_time}");
             using (Stream stream = Request.GetResponse().GetResponseStream())
             {
                 using (StreamReader sr = new StreamReader(stream))
