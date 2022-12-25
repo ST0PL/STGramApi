@@ -33,7 +33,7 @@ namespace STGramApi
             string Method = MethodBase.GetCurrentMethod().Name;
             //Создание объекта запроса, включающего строку GET запроса
             Request = WebRequest.Create($"{STGram.API}{api.Token}/{Method}?chat_id={chat_id}&text={UrlEncode(message_text)}" +
-                $"&reply_to_message_id={reply_to_message_id}&parse_mode={parse_mode}&reply_markup={UrlEncode(JsonConvert.SerializeObject(reply_markup, J
+                $"&reply_to_message_id={reply_to_message_id}&parse_mode={parse_mode}&reply_markup={UrlEncode(JsonConvert.SerializeObject(reply_markup, JSS))}");
             
             //Отправка запроса на сервер и получение потока ответа
             using (Stream stream = Request.GetResponse().GetResponseStream())
