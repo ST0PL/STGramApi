@@ -49,7 +49,8 @@ namespace STGramApi
             }
         }
 
-        public static async Task<Message> SendDocumentAsync(this STGram api, long chat_id, string document, int reply_to_message_id = 0, string caption = "", string parse_mode = "", InlineKeyboardMarkup reply_markup = null)
+        public static async Task<Message> SendDocumentAsync(this STGram api, long chat_id, string document, int reply_to_message_id = 0, string caption = "",
+                                                            string parse_mode = "", InlineKeyboardMarkup reply_markup = null)
         {
             //Проверка наличия кнопок клавиатуры reply_markup
             reply_markup = reply_markup == null ? new InlineKeyboardMarkup() : reply_markup;
@@ -81,7 +82,8 @@ namespace STGramApi
                 }
             }
         }
-        public static async Task<Message> SendPhotoAsync(this STGram api, long chat_id, string photo, string caption = "", string parse_mode = "", InlineKeyboardMarkup reply_markup = null)
+        public static async Task<Message> SendPhotoAsync(this STGram api, long chat_id, string photo, string caption = "", string parse_mode = "",
+                                                         InlineKeyboardMarkup reply_markup = null)
         {
             reply_markup = reply_markup == null ? new InlineKeyboardMarkup() : reply_markup;
             string Method = MethodBase.GetCurrentMethod().Name;
