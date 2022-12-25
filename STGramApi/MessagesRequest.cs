@@ -26,7 +26,8 @@ namespace STGramApi
             NullValueHandling = NullValueHandling.Ignore
         };
         static WebRequest Request;
-        public static Message SendMessage(this STGram api, long chat_id, string message_text, int reply_to_message_id = 0, string parse_mode="", InlineKeyboardMarkup reply_markup = null)
+        public static Message SendMessage(this STGram api, long chat_id, string message_text, int reply_to_message_id = 0, string parse_mode="",
+                                          InlineKeyboardMarkup reply_markup = null)
         {
             reply_markup = reply_markup == null ? new InlineKeyboardMarkup() : reply_markup ;
             string Method = MethodBase.GetCurrentMethod().Name;
@@ -49,8 +50,8 @@ namespace STGramApi
             }
         }
 
-        public static async Task<Message> SendDocumentAsync(this STGram api, long chat_id, string document, int reply_to_message_id = 0, string caption = "",
-                                                            string parse_mode = "", InlineKeyboardMarkup reply_markup = null)
+        public static async Task<Message> SendDocumentAsync(this STGram api, long chat_id, string document, int reply_to_message_id = 0, string caption = "", string parse_mode = "",
+                                                            InlineKeyboardMarkup reply_markup = null)
         {
             //Проверка наличия кнопок клавиатуры reply_markup
             reply_markup = reply_markup == null ? new InlineKeyboardMarkup() : reply_markup;
@@ -105,7 +106,8 @@ namespace STGramApi
                 }
             }
         }
-        public static async Task<Message> SendAudioAsync(this STGram api, long chat_id, string audio, string caption = "", string parse_mode = "", InlineKeyboardMarkup reply_markup = null)
+        public static async Task<Message> SendAudioAsync(this STGram api, long chat_id, string audio, string caption = "", string parse_mode = "",
+                                                         InlineKeyboardMarkup reply_markup = null)
         {
             reply_markup = reply_markup == null ? new InlineKeyboardMarkup() : reply_markup;
             string Method = MethodBase.GetCurrentMethod().Name;
@@ -127,7 +129,8 @@ namespace STGramApi
                 }
             }
         }
-        public static void EditMessageText(this STGram api, long chat_id, long message_id, string message_text, string parse_mode = "", InlineKeyboardMarkup reply_markup = null)
+        public static void EditMessageText(this STGram api, long chat_id, long message_id, string message_text, string parse_mode = "",
+                                           InlineKeyboardMarkup reply_markup = null)
         {
             reply_markup = reply_markup == null ? new InlineKeyboardMarkup() : reply_markup;
             string Method = MethodBase.GetCurrentMethod().Name;
@@ -140,7 +143,8 @@ namespace STGramApi
                 }
             }
         }
-        public static void EditMessageReplyMarkup(this STGram api, long chat_id=0, long message_id=0, string inline_message_id="", InlineKeyboardMarkup reply_markup = null)
+        public static void EditMessageReplyMarkup(this STGram api, long chat_id=0, long message_id=0, string inline_message_id="",
+                                                  InlineKeyboardMarkup reply_markup = null)
         {
             reply_markup = reply_markup == null ? new InlineKeyboardMarkup() : reply_markup;
             string Method = MethodBase.GetCurrentMethod().Name;
