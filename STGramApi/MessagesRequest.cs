@@ -32,7 +32,8 @@ namespace STGramApi
             reply_markup = reply_markup == null ? new InlineKeyboardMarkup() : reply_markup ;
             string Method = MethodBase.GetCurrentMethod().Name;
             //Создание объекта запроса, включающего строку GET запроса
-            Request = WebRequest.Create($"{STGram.API}{api.Token}/{Method}?chat_id={chat_id}&text={UrlEncode(message_text)}&reply_to_message_id={reply_to_message_id}&parse_mode={parse_mode}&reply_markup={UrlEncode(JsonConvert.SerializeObject(reply_markup, JSS))}");
+            Request = WebRequest.Create($"{STGram.API}{api.Token}/{Method}?chat_id={chat_id}&text={UrlEncode(message_text)}" +
+                $"&reply_to_message_id={reply_to_message_id}&parse_mode={parse_mode}&reply_markup={UrlEncode(JsonConvert.SerializeObject(reply_markup, J
             
             //Отправка запроса на сервер и получение потока ответа
             using (Stream stream = Request.GetResponse().GetResponseStream())
@@ -58,7 +59,8 @@ namespace STGramApi
             reply_markup = reply_markup == null ? new InlineKeyboardMarkup() : reply_markup;
             //Получение названия выполняемого метода для дальнейшего подставления в строку запроса
             string Method = MethodBase.GetCurrentMethod().Name;
-            string uri = $"{STGram.API}{api.Token}/SendDocument?chat_id={chat_id}&reply_to_message_id={reply_to_message_id}&caption={caption}&parse_mode={parse_mode}&reply_markup={UrlEncode(JsonConvert.SerializeObject(reply_markup, JSS))}";
+            string uri = $"{STGram.API}{api.Token}/SendDocument?chat_id={chat_id}&reply_to_message_id={reply_to_message_id}&caption={caption}" +
+                "&parse_mode={parse_mode}&reply_markup={UrlEncode(JsonConvert.SerializeObject(reply_markup, JSS))}";
             using (HttpClient client = new HttpClient())
             {
                 //Создание объекта для формы Multipart/form-data
@@ -89,7 +91,8 @@ namespace STGramApi
         {
             reply_markup = reply_markup == null ? new InlineKeyboardMarkup() : reply_markup;
             string Method = MethodBase.GetCurrentMethod().Name;
-            string uri = $"{STGram.API}{api.Token}/SendPhoto?chat_id={chat_id}&caption={caption}&parse_mode={parse_mode}&reply_markup={UrlEncode(JsonConvert.SerializeObject(reply_markup, JSS))}";
+            string uri = $"{STGram.API}{api.Token}/SendPhoto?chat_id={chat_id}&caption={caption}&parse_mode={parse_mode}" +
+                "&reply_markup={UrlEncode(JsonConvert.SerializeObject(reply_markup, JSS))}";
             using (HttpClient client = new HttpClient())
             {
                 using (MultipartFormDataContent content = new MultipartFormDataContent($"Upload----{DateTime.Now.ToString(CultureInfo.InvariantCulture)}"))
@@ -112,7 +115,8 @@ namespace STGramApi
         {
             reply_markup = reply_markup == null ? new InlineKeyboardMarkup() : reply_markup;
             string Method = MethodBase.GetCurrentMethod().Name;
-            string uri = $"{STGram.API}{api.Token}/SendAudio?chat_id={chat_id}&caption={UrlEncode(caption)}&parse_mode={parse_mode}&reply_markup={UrlEncode(JsonConvert.SerializeObject(reply_markup, JSS))}";
+            string uri = $"{STGram.API}{api.Token}/SendAudio?chat_id={chat_id}&caption={UrlEncode(caption)}&parse_mode={parse_mode}" +
+                "&reply_markup={UrlEncode(JsonConvert.SerializeObject(reply_markup, JSS))}";
             using (HttpClient client = new HttpClient())
             {
                 using (MultipartFormDataContent content = new MultipartFormDataContent($"Upload----{DateTime.Now.ToString(CultureInfo.InvariantCulture)}"))
@@ -135,7 +139,8 @@ namespace STGramApi
         {
             reply_markup = reply_markup == null ? new InlineKeyboardMarkup() : reply_markup;
             string Method = MethodBase.GetCurrentMethod().Name;
-            Request = WebRequest.Create($"{STGram.API}{api.Token}/{Method}?chat_id={chat_id}&message_id={message_id}&text={UrlEncode(message_text)}&parse_mode={parse_mode}&reply_markup={UrlEncode(JsonConvert.SerializeObject(reply_markup, JSS))}");
+            Request = WebRequest.Create($"{STGram.API}{api.Token}/{Method}?chat_id={chat_id}&message_id={message_id}&text={UrlEncode(message_text)}&parse_mode={parse_mode}" +
+                                        "&reply_markup={UrlEncode(JsonConvert.SerializeObject(reply_markup, JSS))}");
             using (Stream stream = Request.GetResponse().GetResponseStream())
             {
                 using (StreamReader sr = new StreamReader(stream))
@@ -149,7 +154,8 @@ namespace STGramApi
         {
             reply_markup = reply_markup == null ? new InlineKeyboardMarkup() : reply_markup;
             string Method = MethodBase.GetCurrentMethod().Name;
-            Request = WebRequest.Create($"{STGram.API}{api.Token}/{Method}?chat_id={chat_id}&message_id={message_id}&inline_message_id={inline_message_id}&reply_markup={UrlEncode(JsonConvert.SerializeObject(reply_markup, JSS))}");
+            Request = WebRequest.Create($"{STGram.API}{api.Token}/{Method}?chat_id={chat_id}&message_id={message_id}&inline_message_id={inline_message_id}" +
+                                        "&reply_markup={UrlEncode(JsonConvert.SerializeObject(reply_markup, JSS))}");
             using (Stream stream = Request.GetResponse().GetResponseStream())
             {
                 using (StreamReader sr = new StreamReader(stream))
