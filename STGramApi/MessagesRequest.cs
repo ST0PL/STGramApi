@@ -190,11 +190,11 @@ namespace STGramApi
                 }
             }
         }
-        public static string ForwardMessage(this STGram api, long chat_id, long from_chat_id, long message_id)
-        {
-            string Method = MethodBase.GetCurrentMethod().Name;
-            return "x";
-        }
+        //public static string ForwardMessage(this STGram api, long chat_id, long from_chat_id, long message_id)
+        //{
+            //string Method = MethodBase.GetCurrentMethod().Name;
+            //return "x";
+        //}
         public static MessageModel.File GetFile(this STGram api, string file_id)
         {
             string Method = MethodBase.GetCurrentMethod().Name;
