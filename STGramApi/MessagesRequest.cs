@@ -50,7 +50,21 @@ namespace STGramApi
                 }
             }
         }
-
+        public static async Task<User> GetMe(this STGram api)
+        {
+            string Method = MethodBase.GetCurrentMethod().Name;
+            string uri = $"{STGram.API}{api.Token}/getMe";
+            Request = WebRequest.Create(uri);
+            using (Stream stream = Request.GetResponse().GetResponseStream())
+            {
+                using (StreamReader sr = new StreamReader(stream))
+                {
+                    JObject JsonObject = JObject.Parse(sr.ReadToEnd());
+                    User user = JsonConvert.DeserializeObject<User>(JsonObject["result"].ToString());
+                    return user;
+                }
+            }
+        }        
         public static async Task<Message> SendDocumentAsync(this STGram api, long chat_id, string document, int reply_to_message_id = 0, string caption = "",
                                                             string parse_mode = "",
                                                             InlineKeyboardMarkup reply_markup = null)
