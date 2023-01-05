@@ -50,7 +50,7 @@ namespace STGramApi
                 }
             }
         }
-        public static async Task<User> GetMe(this STGram api)
+        public static async Task<User> GetMeAsync(this STGram api)
         {
             string Method = MethodBase.GetCurrentMethod().Name;
             string uri = $"{STGram.API}{api.Token}/getMe";
