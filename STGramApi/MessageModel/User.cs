@@ -1,12 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 namespace STGramApi.MessageModels
 {
     public class User
     {
-        public int Id { get; set; }
+        public long Id { get; set; }
         public bool Is_bot { get; set; }
         public string First_name { get; set; }
         public string Last_name { get; set; }
