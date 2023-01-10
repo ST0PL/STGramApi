@@ -204,11 +204,23 @@ namespace STGramApi
                 }
             }
         }
-        //public static string ForwardMessage(this STGram api, long chat_id, long from_chat_id, long message_id)
-        //{
-            //string Method = MethodBase.GetCurrentMethod().Name;
-            //return "x";
-        //}
+        public static Message ForwardMessage(this STGram api, long chat_id, long from_chat_id, long message_id)
+        {
+            string Method = MethodBase.GetCurrentMethod().Name;
+            Request = WebRequest.Create($"{STGram.API}{api.Token}/{Method}?chat_id={chat_id}&from_chat_id={from_chat_id}&message_id={message_id}");
+            Request.Proxy = null;
+            {
+                using (Stream stream = Request.GetResponse().GetResponseStream())
+                {
+                    using (StreamReader sr = new StreamReader(stream))
+                    {
+                        JObject jsonObject = JObject.Parse(sr.ReadToEnd());
+                        Message Result = JsonConvert.DeserializeObject<Message>(jsonObject["result"].ToString());
+                        return Result;
+                    }
+                }
+            }
+        }
         public static MessageModel.File GetFile(this STGram api, string file_id)
         {
             string Method = MethodBase.GetCurrentMethod().Name;
