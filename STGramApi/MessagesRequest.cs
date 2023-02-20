@@ -27,31 +27,13 @@ namespace STGramApi
         };
         static WebRequest Request;
 
-        [Obsolete]
-        public static Message SendMessage(this STGram api, long chat_id, string message_text, int reply_to_message_id = 0, string parse_mode="",
-            InlineKeyboardMarkup reply_markup = null)
-        {
-            reply_markup = reply_markup == null ? new InlineKeyboardMarkup() : reply_markup ;
-            string Method = MethodBase.GetCurrentMethod().Name;
-            Request = WebRequest.Create($"{STGram.API}{api.Token}/{Method}?chat_id={chat_id}&text={UrlEncode(message_text)}" +
-                $"&reply_to_message_id={reply_to_message_id}&parse_mode={parse_mode}&reply_markup={UrlEncode(JsonConvert.SerializeObject(reply_markup, JSS))}");
-            
-            using (Stream stream = Request.GetResponse().GetResponseStream())
-            {
-                using (StreamReader sr = new StreamReader(stream))
-                {
-                    JObject jsonObject = JObject.Parse(sr.ReadToEnd());
-                    Message message = JsonConvert.DeserializeObject<Message>(jsonObject["result"].ToString());
-                    return message;
-                }
-            }
-        }
         public static async Task<Message> SendMessageAsync(
             this STGram api,
             long chat_id,
             string message_text,
             int reply_to_message_id = 0,
             string parse_mode = "",
+            MessageEntity[] entities = null,
             InlineKeyboardMarkup reply_markup = null)
         {
             ApiUrl = $"{STGram.API}{api.Token}/SendMessage";
@@ -62,6 +44,7 @@ namespace STGramApi
                 text = message_text,
                 reply_to_message_id = reply_to_message_id,
                 parse_mode = parse_mode,
+                entity = entities,
                 reply_markup = JsonConvert.SerializeObject(reply_markup,JSS)
             };
             FormUrlEncodedContent content = new FormUrlEncodedContent(JsonConvert.DeserializeObject<Dictionary<string,string>>(JsonConvert.SerializeObject(requestObject,JSS)));
@@ -138,24 +121,34 @@ namespace STGramApi
         }
 
         public static async Task<Message> SendDocumentAsync(
-            this STGram api, 
+            this STGram api,
             long chat_id,
             string document,
-            int reply_to_message_id = 0,
             string caption = "",
             string parse_mode = "",
+            long reply_to_message_id = 0,
+            bool allow_sending_without_reply = false,
+            bool protect_content = false,
+            bool disable_notification = false,
+            bool has_spoiler = false,
+            MessageEntity[] caption_entities = null,
             InlineKeyboardMarkup reply_markup = null)
         {
             reply_markup = reply_markup == null ? new InlineKeyboardMarkup() : reply_markup;
             var requestObject = new
             {
                 chat_id = chat_id,
+                caption = caption,
                 reply_to_message_id = reply_to_message_id,
                 parse_mode = parse_mode,
-                caption = caption, 
+                allow_sending_without_reply = allow_sending_without_reply,
+                protect_content = protect_content,
+                disable_notification = disable_notification,
+                has_spoiler = has_spoiler,
+                caption_entities = caption_entities,
                 reply_markup = JsonConvert.SerializeObject(reply_markup, JSS)
             };
-            FormUrlEncodedContent dataContent = new FormUrlEncodedContent(JsonConvert.DeserializeObject<Dictionary<string,string>>(JsonConvert.SerializeObject(requestObject,JSS)));
+            var dict = JsonConvert.DeserializeObject<Dictionary<string,string>>(JsonConvert.SerializeObject(requestObject,JSS));
             ApiUrl = $"{STGram.API}{api.Token}/SendDocument";
             using (MultipartFormDataContent content = new MultipartFormDataContent($"Upload----{DateTime.Now.ToString(CultureInfo.InvariantCulture)}"))
             {
@@ -164,6 +157,10 @@ namespace STGramApi
                     StreamContent streamContent = new StreamContent(fs);
                     streamContent.Headers.Add("Content-Disposition", new string(Encoding.UTF8.GetBytes($"form-data; name=\"document\"; filename=\"{Path.GetFileName(document)}\"").Select(b => (char)b).ToArray()));
                     content.Add(streamContent);
+                    foreach(var item in dict)
+                    {
+                        content.Add(new StringContent(item.Value), item.Key);
+                    }
                     using (var msg = await client.PostAsync(ApiUrl, content))
                     {
                         JObject jsonObject = JObject.Parse(await msg.Content.ReadAsStringAsync());
@@ -173,11 +170,34 @@ namespace STGramApi
                 }
             }
         }
-        public static async Task<Message> SendPhotoAsync(this STGram api, long chat_id, string photo, string caption = "", string parse_mode = "", InlineKeyboardMarkup reply_markup = null)
+        public static async Task<Message> SendPhotoAsync(
+            this STGram api,
+            long chat_id,
+            string photo,
+            string caption = "",
+            string parse_mode = "",
+            long reply_to_message_id = 0,
+            bool allow_sending_without_reply = false,
+            bool protect_content = false,
+            bool disable_notification = false,
+            bool has_spoiler = false,
+            InlineKeyboardMarkup reply_markup = null)
         {
             reply_markup = reply_markup == null ? new InlineKeyboardMarkup() : reply_markup;
-            string Method = MethodBase.GetCurrentMethod().Name;
-            string uri = $"{STGram.API}{api.Token}/SendPhoto?chat_id={chat_id}&caption={caption}&parse_mode={parse_mode}&reply_markup={UrlEncode(JsonConvert.SerializeObject(reply_markup, JSS))}";
+            var requestObject = new
+            {
+                chat_id = chat_id,
+                caption = caption,
+                reply_to_message_id = reply_to_message_id,
+                parse_mode = parse_mode,
+                allow_sending_without_reply = allow_sending_without_reply,
+                protect_content = protect_content,
+                disable_notification = disable_notification,
+                has_spoiler = has_spoiler,
+                reply_markup = JsonConvert.SerializeObject(reply_markup, JSS)
+            };
+            var dict = JsonConvert.DeserializeObject<Dictionary<string, string>>(JsonConvert.SerializeObject(requestObject, JSS));
+            ApiUrl = $"{STGram.API}{api.Token}/SendPhoto";
             using (HttpClient client = new HttpClient())
             {
                 using (MultipartFormDataContent content = new MultipartFormDataContent($"Upload----{DateTime.Now.ToString(CultureInfo.InvariantCulture)}"))
@@ -185,8 +205,13 @@ namespace STGramApi
                     using (FileStream fs = System.IO.File.OpenRead(photo))
                     {
                         content.Add(new StreamContent(fs), "photo", Path.GetFileName(photo));
-                        using (var msg = await client.PostAsync(uri, content))
+                        foreach(var item in dict)
                         {
+                            content.Add(new StringContent(item.Value), item.Key);
+                        }
+                        using (var msg = await client.PostAsync(ApiUrl, content))
+                        {
+                            var z = await msg.Content.ReadAsStringAsync();
                             JObject jsonObject = JObject.Parse(await msg.Content.ReadAsStringAsync());
                             Message message = JsonConvert.DeserializeObject<Message>(jsonObject["result"].ToString());
                             return message;
@@ -195,16 +220,50 @@ namespace STGramApi
                 }
             }
         }
-        public static async Task<Message> SendVideoAsync(this STGram api, long chat_id, string video, string caption = "", string parse_mode = "", InlineKeyboardMarkup reply_markup = null)
+        public static async Task<Message> SendVideoAsync(
+            this STGram api,
+            long chat_id,
+            string video,
+            string caption = "",
+            string parse_mode = "",
+            long reply_to_message_id = 0,
+            bool disable_notification = false,
+            bool has_spoiler = false,
+            bool protect_content = false,
+            bool supports_streaming = false,
+            bool allow_sending_without_reply = false,
+            MessageEntity[] caption_entities = null,
+            InlineKeyboardMarkup reply_markup = null)
         {
             reply_markup = reply_markup == null ? new InlineKeyboardMarkup() : reply_markup;
-            string uri = $"{STGram.API}{api.Token}/SendVideo?chat_id={chat_id}&caption={caption}&parse_mode={parse_mode}&reply_markup={UrlEncode(JsonConvert.SerializeObject(reply_markup, JSS))}";
+            var requestObject = new
+            {
+                chat_id = chat_id,
+                caption = caption,
+                reply_to_message_id = reply_to_message_id,
+                parse_mode = parse_mode,
+                allow_sending_without_reply = allow_sending_without_reply,
+                protect_content = protect_content,
+                disable_notification = disable_notification,
+                caption_entities = caption_entities,
+                supports_streaming = supports_streaming,
+                has_spoiler = has_spoiler,
+                reply_markup = JsonConvert.SerializeObject(reply_markup, JSS)
+            };
+            reply_markup = reply_markup == null ? new InlineKeyboardMarkup() : reply_markup;
+            ApiUrl = $"{STGram.API}{api.Token}/SendVideo";
+            var dict = JsonConvert.DeserializeObject<Dictionary<string, string>>(JsonConvert.SerializeObject(requestObject, JSS));
+
             using (MultipartFormDataContent content = new MultipartFormDataContent($"Upload----{DateTime.Now.ToString(CultureInfo.InvariantCulture)}"))
             {
                 using (FileStream fs = System.IO.File.OpenRead(video))
                 {
                     content.Add(new StreamContent(fs), "video", Path.GetFullPath(video));
-                    using (var msg = await client.PostAsync(uri, content))
+                    foreach(var item in dict)
+                    {
+                        content.Add(new StringContent(item.Value), item.Key);
+                    }
+                    using (var msg = await client.PostAsync(ApiUrl, content))
                     {
                         JObject jsonObject = JObject.Parse(await msg.Content.ReadAsStringAsync());
                         Message message = JsonConvert.DeserializeObject<Message>(jsonObject["result"].ToString());
@@ -213,11 +272,38 @@ namespace STGramApi
                 }
             }
         }
-        public static async Task<Message> SendAudioAsync(this STGram api, long chat_id, string audio, string caption = "", string parse_mode = "", InlineKeyboardMarkup reply_markup = null)
+        public static async Task<Message> SendAudioAsync(
+            this STGram api,
+            long chat_id,
+            string audio,
+            string caption = "",
+            string parse_mode = "",
+            string performer = "",
+            string title = "",
+            MessageEntity[] caption_entities = null,
+            long reply_to_message_id = 0,
+            bool disable_notification = false,
+            bool protect_content = false,
+            bool allow_sending_without_reply = false,
+            InlineKeyboardMarkup reply_markup = null)
         {
             reply_markup = reply_markup == null ? new InlineKeyboardMarkup() : reply_markup;
-            string Method = MethodBase.GetCurrentMethod().Name;
-            string uri = $"{STGram.API}{api.Token}/SendAudio?chat_id={chat_id}&caption={UrlEncode(caption)}&parse_mode={parse_mode}&reply_markup={UrlEncode(JsonConvert.SerializeObject(reply_markup, JSS))}";
+            ApiUrl = $"{STGram.API}{api.Token}/SendAudio";
+            var requestObject = new
+            {
+                chat_id = chat_id,
+                caption = caption,
+                reply_to_message_id = reply_to_message_id,
+                parse_mode = parse_mode,
+                allow_sending_without_reply = allow_sending_without_reply,
+                protect_content = protect_content,
+                disable_notification = disable_notification,
+                caption_entities = caption_entities,
+                performer = performer,
+                title = title,
+                reply_markup = JsonConvert.SerializeObject(reply_markup, JSS)
+            };
+            var dict = JsonConvert.DeserializeObject<Dictionary<string, string>>(JsonConvert.SerializeObject(requestObject, JSS));
             using (HttpClient client = new HttpClient())
             {
                 using (MultipartFormDataContent content = new MultipartFormDataContent($"Upload----{DateTime.Now.ToString(CultureInfo.InvariantCulture)}"))
@@ -225,7 +311,11 @@ namespace STGramApi
                     using (FileStream fs = System.IO.File.OpenRead(audio))
                     {
                         content.Add(new StreamContent(fs), "audio", Path.GetFileName(audio));
-                        using (var msg = await client.PostAsync(uri, content))
+                        foreach(var item in dict)
+                        {
+                            content.Add(new StringContent(item.Value), item.Key);
+                        }
+                        using (var msg = await client.PostAsync(ApiUrl, content))
                         {
                             JObject jsonObject = JObject.Parse(await msg.Content.ReadAsStringAsync());
                             Message message = JsonConvert.DeserializeObject<Message>(jsonObject["result"].ToString());
@@ -235,7 +325,13 @@ namespace STGramApi
                 }
             }
         }
-        public static Message EditMessageText(this STGram api, long chat_id, long message_id, string message_text, string parse_mode = "", InlineKeyboardMarkup reply_markup = null)
+        public static Message EditMessageText(
+            this STGram api,
+            long chat_id,
+            long message_id,
+            string message_text,
+            string parse_mode = "",
+            InlineKeyboardMarkup reply_markup = null)
         {
             reply_markup = reply_markup == null ? new InlineKeyboardMarkup() : reply_markup;
             string Method = MethodBase.GetCurrentMethod().Name;
