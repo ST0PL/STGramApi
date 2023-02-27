@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using System.Net;
 using Newtonsoft.Json;
-using STGramApi.MessageModel;
+using STGramApi.MessageModels;
 using STGramApi;
 using Newtonsoft.Json.Linq;
 using System.IO;
@@ -20,7 +20,7 @@ namespace STGramApi
     {
         static WebRequest Request;
         static StreamReader sr;
-        public static event Action<MessageRecievedEventArgs> MessageRecieved;
+        public static event Action<MessageReceivedEventArgs> MessageReceived;
         public async static void StartRecieve(this STGram api)
         {
             List<int> buffer = new List<int>();
@@ -46,7 +46,7 @@ namespace STGramApi
                 if (Response["result"].HasValues)
                 {
                     var ResponseCollection = JsonConvert.DeserializeObject<Message>(Response["result"][0]["message"].ToString());
-                    MessageRecieved.Invoke(new MessageRecievedEventArgs(ResponseCollection));
+                    MessageReceived.Invoke(new MessageReceivedEventArgs(ResponseCollection));
                     offset += 1;
                 }
             }
