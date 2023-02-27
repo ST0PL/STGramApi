@@ -4,8 +4,9 @@ using System.Text;
 
 namespace STGramApi.MessageModels
 {
-    public class File : BaseDocumentComponents
+    public class Dice
     {
-        public string File_path { get; set; }
+        public string Emoji { get; set; }
+        public int Value { get; set; }
     }
 }

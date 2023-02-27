@@ -4,8 +4,9 @@ using System.Text;
 
 namespace STGramApi.MessageModels
 {
-    public class File : BaseDocumentComponents
+    public class ChatLocation
     {
-        public string File_path { get; set; }
+        public Location Location { get; set; }
+        public string Address { get; set; }
     }
 }

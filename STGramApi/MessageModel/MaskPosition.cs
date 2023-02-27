@@ -1,6 +1,6 @@
-namespace STGramApi.MessageModels
+﻿namespace STGramApi.MessageModels
 {
-    class MaskPosition
+    public class MaskPosition
     {
         public string Point { get; set; }
         public float X_shift { get; set; }

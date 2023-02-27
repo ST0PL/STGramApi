@@ -4,8 +4,9 @@ using System.Text;
 
 namespace STGramApi.MessageModels
 {
-    public class File : BaseDocumentComponents
+    public class PollOption
     {
-        public string File_path { get; set; }
+        public string Text { get; set; }
+        public int Voter_count { get; set; }
     }
 }

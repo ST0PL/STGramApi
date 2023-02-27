@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace STGramApi.MessageModel
+namespace STGramApi.MessageModels
 {
     public class BaseMessageComponents
     {

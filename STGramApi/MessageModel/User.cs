@@ -1,4 +1,4 @@
-namespace STGramApi.MessageModels
+﻿namespace STGramApi.MessageModels
 {
     public class User
     {

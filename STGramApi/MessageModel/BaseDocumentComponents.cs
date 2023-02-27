@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace STGramApi.MessageModel
+namespace STGramApi.MessageModels
 {
     public class BaseDocumentComponents 
     {
